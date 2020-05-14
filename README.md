@@ -1,12 +1,10 @@
 # GolfScript.js
 
-This is a full JavaScript interpreter for GolfScript.
+This is a full JavaScript interpreter for GolfScript. Try it at <https://golfscript.github.io/golfscript.js/>
 
 GolfScript is a stack based language developed by Darren Smith. You can read about it at <http://www.golfscript.com>
 
-This implementation uses standard JavaScript objects on the stack, rather than custom classes or monkey patching the prototypes.
-
-So the GolfScript integer is represented by the JavaScript Number (or BigInt, if too large), array by Array, string by String, and block by Function.
+This implementation uses standard JavaScript objects on the stack, rather than custom classes or monkey patching the prototypes. So the GolfScript integer is represented by the JavaScript Number (or BigInt, if too large), array by Array, string by String, and block by Function.
 
 One main difference to the original GolfScript interpreter is that this version is based on Unicode for strings, rather than UTF-8 (e.g. 😀 is a treated as a single character).
 
