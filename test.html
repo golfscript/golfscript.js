@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+
+<head>
+<meta charset="UTF-8">
+<title>GolfScript.js</title>
+<script src="golfscript.js"></script>
+<script>const get = id => document.getElementById(id)</script>
+</head>
+
+<body>
+<textarea id="input" cols="80" rows="20" placeholder="input"></textarea>
+<textarea id="code" cols="80" rows="20" placeholder="code"></textarea>
+<p><button onclick="get('output').innerText=Golfscript(get('code').value, [get('input').value])">Go</button></p>
+<pre id="output"></pre>
+</body>
+
