@@ -1,4 +1,4 @@
-function Golfscript(code,stack=[],blocks={},output='')
+function GolfScript(code,stack=[],blocks={},output='')
 {
   const lengths=[],// stores stack lengths at each [
   A=Array, N=Number, B=BigInt, S=String,

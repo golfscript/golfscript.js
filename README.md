@@ -12,4 +12,11 @@ One main difference to the original GolfScript interpreter is that this version 
 
 If you want, you can pass your own JavaScript functions to the interpreter, and use them in your GolfScript. The interpreter will automatically pop the correct number of arguments off the stack to pass to your function, and push the result back on the stack (if it is not null or undefined).
 
-Have fun!
+The syntax for calling GolfScript interpreter is as follows:
+
+GolfScript(code,stack=[],blocks={},output='')
+code: GolfScript program string
+stack: optionally specify the existing array to use
+blocks: optionally specify your own functions or variables (e.g. {alert:x=>alert(x), log:x=>console.log(x)})
+output: optionally specify the starting string to use for output
+return value: the output string
