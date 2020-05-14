@@ -15,8 +15,13 @@ If you want, you can pass your own JavaScript functions to the interpreter, and 
 The syntax for calling GolfScript interpreter is as follows:
 
 GolfScript(code,stack=[],blocks={},output='')
-code: GolfScript program string
-stack: optionally specify the existing array to use
-blocks: optionally specify your own functions or variables (e.g. {alert:x=>alert(x), log:x=>console.log(x)})
-output: optionally specify the starting string to use for output
-return value: the output string
+
+*code*: GolfScript program string
+
+*stack*: optionally specify the existing array to use
+
+*blocks*: optionally specify your own functions or variables (e.g. {alert:x=>alert(x), log:x=>console.log(x)})
+
+*output*: optionally specify the starting string to use for output
+
+*return value*: the output string
