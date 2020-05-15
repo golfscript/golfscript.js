@@ -16,10 +16,10 @@ GolfScript(code,stack=[],blocks={},output='')
 
 *code*: GolfScript program string
 
-*stack*: optionally specify the existing array to use
+*stack*: optionally specify the existing array to use (e.g. ['input string'])
 
 *blocks*: optionally specify your own functions or variables (e.g. {alert:x=>alert(x), log:x=>console.log(x)})
 
-*output*: optionally specify the starting string to use for output
+*output*: optionally specify the starting string to use for output (e.g. 'The answer is: ')
 
 *return value*: the output string
