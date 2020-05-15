@@ -1,6 +1,6 @@
 # GolfScript.js
 
-This is a full JavaScript interpreter for GolfScript. Try it at <https://golfscript.github.io/golfscript.js/>
+This is a full JavaScript interpreter for GolfScript. Try it at <https://golfscript.github.io/>
 
 GolfScript is a stack based language developed by Darren Smith. You can read about it at <http://www.golfscript.com>
 
