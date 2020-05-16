@@ -1,6 +1,6 @@
 function GolfScript(code,stack=[],blocks={},output='')
 {
-  const lengths=[],// stores stack lengths at each [
+  lengths=[],// stores stack lengths at each [
   A=Array, N=Number, B=BigInt, S=String,
 
   pop=()=>{for (let i in lengths) if (lengths[i]>=len(stack)) lengths[i]--; return stack.pop();},
@@ -11,7 +11,7 @@ function GolfScript(code,stack=[],blocks={},output='')
   block=s=>{let f=()=>exec(s); f.toString=()=>s; return f;},
   id=g=>g,// identity function
   len=g=>g.length,
-  com=(f,g,...h)=>(...x)=>len(h)?f(com(g,...h)(...x)):f(g(...x)),// function composition
+  com=(f,...h)=>len(h)?(...x)=>f(com(...h)(...x)):f,// function composition
   type=g=>('fso'.indexOf((typeof g)[0])+4)%4,// 0=function,1=string,2=object(array),3=rest(bigint or number)
   types=g=>'fsobn'.indexOf((typeof g)[0]),// 0=function,1=string,2=object,3=bigint,4=number
   erce=(a,b)=>(erces[type(a)][types(b)] || id)(a),
@@ -106,10 +106,10 @@ function GolfScript(code,stack=[],blocks={},output='')
     '%':order([(s,f)=>map(f,s2a(s))],[(f,s)=>a2s(map(f,s2a(s))),(x,y)=>x.split(y).filter(id)],
       [map,(s,a)=>split(s2a(s),a).filter(len),(x,y)=>split(x,y).filter(len)],[9,(s,n)=>join(step(a2a(s),n)),step,f2n((x,y)=>x<0?x%y+y:x%y)]),
     '|':coerce(0,(x,y)=>join(dedup(x+y)),(x,y)=>dedup(x.concat(y)),f2n((x,y)=>x|y)),
-    '&':coerce(0,(x,y)=>join(dedup(S(x)).filter(e=>y.indexOf(e)+1)),(x,y)=>dedup(x).filter(e=>includes(y,e)),f2n((x,y)=>x&y)),
+    '&':coerce(0,(x,y)=>join(dedup(S(x)).filter(e=>y.includes(e))),(x,y)=>dedup(x).filter(e=>includes(y,e)),f2n((x,y)=>x&y)),
     '^':coerce(0,com(join,diff),diff,f2n((x,y)=>x^y)),
     '=':order([equals],[equals,equals],[equals,equals,equals],[slook,slook,(a,n)=>n<0?a[len(a)+n]:a[n],equals]),
-    ',':apply(f=>apply(com(block,a2s,filter(f),s2a),com(a2s,filter(f),s2a),filter(f),9)(pop()),com(len,a2a),len,n=>A(n<0?0:n).fill().map((_,i)=>i)),
+    ',':apply(f=>apply(com(block,a2s,filter(f),s2a),com(a2s,filter(f),s2a),filter(f))(pop()),com(len,a2a),len,n=>A(n<0?0:n).fill().map((_,i)=>i)),
     '.':g=>push(g,g),
     ';':_=>{},
     '<':order([less],[less,less],[(f,a)=>aless(s2a(f),a),(s,a)=>aless(s2a(s),a),aless],
