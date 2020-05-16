@@ -8,7 +8,7 @@ function GolfScript(code,stack=[],blocks={},output='')
   push=(...x)=>{stack.push(...x)},// deliberately returns null
   peek=(n=0)=>stack[n<0?-n-1:len(stack)-n-1],
   
-  block=s=>{let f=()=>exec(s); f.gs_add=t=>s+=t; f.toString=()=>s; return f; },
+  block=s=>{let f=()=>exec(s); f.toString=()=>s; return f;},
   id=g=>g,// identity function
   len=g=>g.length,
   com=(f,g,...h)=>(...x)=>len(h)?f(com(g,...h)(...x)):f(g(...x)),// function composition
@@ -78,9 +78,9 @@ function GolfScript(code,stack=[],blocks={},output='')
   {
     let curly=0;
     if (s) s.match(/#[^\n\r]*|:?(-?\d+|"(\\.|[^"])*"|'(\\.|[^'])*'|\w+|\W)/g).forEach(op=>{
-      if (op=='{' && !curly++) return push(block(''));
-      if (op=='}' && !--curly) return;
-      if (curly) return peek().gs_add(op);
+      if (op=='{' && !curly++) return push('');
+      if (op=='}' && !--curly) return push(block(pop()));
+      if (curly) return stack[len(stack)-1]+=op;
       if (op[0]=='#') return;
       if (op[0]==':') return vars[op.substr(1)]=peek();
       
