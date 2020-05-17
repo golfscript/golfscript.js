@@ -1,6 +1,6 @@
 function GolfScript(code,stack=[],blocks={},output='')
 {
-  lengths=[],// stores stack lengths at each [
+  const lengths=[],// stores stack lengths at each [
   A=Array, N=Number, B=BigInt, S=String,
 
   pop=()=>{for (let i in lengths) if (lengths[i]>=len(stack)) lengths[i]--; return stack.pop();},
@@ -77,7 +77,7 @@ function GolfScript(code,stack=[],blocks={},output='')
   exec=s=>
   {
     let curly=0;
-    if (s) s.match(/#[^\n\r]*|:?(-?\d+|"(\\.|[^"])*"|'(\\.|[^'])*'|\w+|\W)/g).forEach(op=>{
+    if (s) s.match(/#[^\n\r]*|:?(-?\d+|"(\\.|[^"])*"|'(\\.|[^'])*'|\w+|\W)/gu).forEach(op=>{
       if (op=='{' && !curly++) return push('');
       if (op=='}' && !--curly) return push(block(pop()));
       if (curly) return stack[len(stack)-1]+=op;
@@ -119,7 +119,7 @@ function GolfScript(code,stack=[],blocks={},output='')
     '\\':(g,h)=>push(h,g),
     '[':()=>{lengths.push(len(stack))},
     ']':()=>stack.splice(lengths.pop()),
-    '?':order(9,[(f,s)=>find(f,s2a(s)),(x,y)=>x.indexOf(y)],[find,(s,a)=>index(a,s),index],[9,(s,n)=>s.indexOf(a2s(n)),index,f2n((x,y)=>x**y)]),
+    '?':order([(f,g)=>find(f,s2a(S(g)))],[(f,s)=>find(f,s2a(s)),(x,y)=>a2a(x).findIndex((_,i,a)=>join(a.slice(i)).startsWith(y))],[find,(s,a)=>index(a,s),index],[9,(s,n)=>a2a(s).indexOf(a2s(n)),index,f2n((x,y)=>x**y)]),
     '(':apply(f=>push(block(join(a2a(S(f)).slice(1))),chr(f)),s=>push(join(a2a(s).slice(1)),chr(s)),a=>push(a.slice(1),a[0]),f2n(n=>--n)),
     ')':apply(f=>{let a=a2a(S(f)),t=a.pop();push(block(join(a)),chr(t))},s=>push(join((s=a2a(s)).slice(0,-1)),chr(s[len(s)-1])),a=>push(a=a2a(a),a.pop()),f2n(n=>++n)),
     and:block('1$if'),
