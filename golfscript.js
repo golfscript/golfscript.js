@@ -11,13 +11,12 @@ function GolfScript(code,stack=[],blocks={},output='')
   block=s=>{let f=()=>exec(s); f.toString=()=>s; return f;},
   id=g=>g,// identity function
   len=g=>g.length,
-  com=(f,...h)=>len(h)?(...x)=>f(com(...h)(...x)):f,// function composition
+  com=(f,...h)=>len(h)?(...x)=>len(f)==1?f(com(...h)(...x)):f(...x.map(e=>com(...h)(e))):f,// function composition
   type=g=>('fso'.indexOf((typeof g)[0])+4)%4,// 0=function,1=string,2=object(array),3=rest(bigint or number)
   types=g=>'fsobn'.indexOf((typeof g)[0]),// 0=function,1=string,2=object,3=bigint,4=number
   erce=(a,b)=>(erces[type(a)][types(b)] || id)(a),
   apply=(...a)=>x=>a[type(x)](x),
-  fs=f=>(x,y)=>block(f(S(x),S(y))), // turn string function into block function
-  coerce=(...a)=>(x,y)=>(a[type(x=erce(x,y))] || fs(a[1]))(x,erce(y,x)), // default for block function is based on string
+  coerce=(...a)=>(x,y)=>(a[type(x=erce(x,y))] || com(block,a[1],S))(x,erce(y,x)), // default for block function is based on string
   order=(...a)=>(x,y)=>{if (types(x)>types(y)) [x,y]=[y,x]; return a[type(y)][type(x)](x,y)},
   backtick=apply(f=>`{${f}}`,JSON.stringify,x=>`[${x.map(e=>backtick(e)).join(' ')}]`,S),
   join=a=>a.join(''),
@@ -37,17 +36,19 @@ function GolfScript(code,stack=[],blocks={},output='')
   erces=[[],[block],[a=>block(a.map(apply(S,id,a2s,S)).join(' ')),a2s],[com(block,S),S,A.of,B]],
 
   bool=apply(S,id,len,id),
+  concat=(x,y)=>x.concat(y),
   fold=(f,x)=>{if (len(x)) push(x[0])||x.slice(1).forEach(e=>push(e)||f())},
   compare=(a,b)=>less(a,b) ? -1 : equals(a,b) ? 0 : 1,
   sort=(a)=>a2a(a).sort(compare),
   fsort=f=>pop().map(e=>push(e) || f() || {e,s:pop()}).sort((a,b)=>compare(a.s,b.s)).map(({e})=>e),
   minus=(x,y)=>x.filter(e=>!includes(y,e)),
+  inter=(x,y)=>dedup(x).filter(e=>includes(y,e)),
   filter=f=>a=>a.filter(e=>push(e) || f() || bool(pop())),
   includes=(a,g)=>a2a(a).some(e=>equals(e,g)),
   equals=coerce((x,y)=>+(S(x)==y),(x,y)=>+(x==y),(x,y)=>+(len(x)==len(y) && x.every((e,i)=>equals(e,y[i]))),(x,y)=>+(x==y)),
   index=(a,g)=>a.findIndex(e=>equals(e,g)),
   dedup=a=>a2a(new Set(a)),
-  diff=(a,b)=>dedup(a.concat(b)).filter(e=>!includes(a,e)||!includes(b,e)),
+  diff=(a,b)=>dedup(concat(a,b)).filter(e=>!includes(a,e)||!includes(b,e)),
   find=(f,a)=>a.find(e=>push(e) || f() || +!!bool(pop())),
   group=f=>(a,n)=>a2a({length:Math.ceil(len(a)/n)},(_,i)=>f(a.slice(i*n,i*n+n))),
   maxlen=a=>a.reduce((t,e)=>Math.max(t,len(e)),0),
@@ -96,17 +97,17 @@ function GolfScript(code,stack=[],blocks={},output='')
     '!':g=>+!bool(g),
     '@':(a,b,c)=>push(b,c,a),
     '$':apply(fsort,com(join,sort),sort,peek),
-    '+':coerce((x,y)=>block(x+' '+y),(x,y)=>x+y,(x,y)=>x.concat(y),f2n((x,y)=>x+y)),
-    '-':coerce(0,(x,y)=>join(minus(a2a(x),a2a(y))),minus,(x,y)=>x-y),
+    '+':coerce((x,y)=>block(x+' '+y),concat,concat,f2n((x,y)=>x+y)),
+    '-':coerce(0,com(join,minus,a2a),minus,(x,y)=>x-y),
     '*':order([(f,g)=>fold(f,s2a(g))],[(f,s)=>fold(f,s2a(s)),(x,y)=>a2a(x).join(y)],
-      [fold,(s,a)=>a.map(e=>erce(e,'')).join(s),(a,b)=>len(a)?a.reduce((t,e)=>[].concat(t,b,e)):[]],
+      [fold,(s,a)=>a.map(e=>erce(e,s)).join(s),(a,b)=>len(a)?a.reduce((t,e)=>[].concat(t,b,e)):a],
       [(f,n)=>{while (n-->0) f()},(s,n)=>s.repeat(n),(a,n)=>A(n).fill(a).flat(),f2n((x,y)=>x*y)]),
     '/':order([unfold],[(f,s)=>each(f,s2a(s)),(x,y)=>x.split(y)],[each,(s,a)=>split(s2a(s),a),split],
       [(c,n)=>unfold(c,block(S(n))),(s,n)=>group(join)(a2a(s),n),group(join),f2n((x,y)=>x/y)]),
     '%':order([(s,f)=>map(f,s2a(s))],[(f,s)=>a2s(map(f,s2a(s))),(x,y)=>x.split(y).filter(id)],
       [map,(s,a)=>split(s2a(s),a).filter(len),(x,y)=>split(x,y).filter(len)],[9,(s,n)=>join(step(a2a(s),n)),step,f2n((x,y)=>x<0?x%y+y:x%y)]),
-    '|':coerce(0,(x,y)=>join(dedup(x+y)),(x,y)=>dedup(x.concat(y)),f2n((x,y)=>x|y)),
-    '&':coerce(0,(x,y)=>join(dedup(S(x)).filter(e=>y.includes(e))),(x,y)=>dedup(x).filter(e=>includes(y,e)),f2n((x,y)=>x&y)),
+    '|':coerce(0,com(join,dedup,concat),com(dedup,concat),f2n((x,y)=>x|y)),
+    '&':coerce(0,com(join,inter),inter,f2n((x,y)=>x&y)),
     '^':coerce(0,com(join,diff),diff,f2n((x,y)=>x^y)),
     '=':order([equals],[equals,equals],[equals,equals,equals],[slook,slook,(a,n)=>n<0?a[len(a)+n]:a[n],equals]),
     ',':apply(f=>apply(com(block,a2s,filter(f),s2a),com(a2s,filter(f),s2a),filter(f))(pop()),com(len,a2a),len,n=>A(n<0?0:n).fill().map((_,i)=>i)),
