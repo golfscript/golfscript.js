@@ -11,7 +11,7 @@ function GolfScript(code,stack=[],blocks={},output='')
   block=s=>{let f=()=>exec(s); f.toString=()=>s; return f;},
   id=g=>g,// identity function
   len=g=>g.length,
-  com=(f,...h)=>len(h)?(...x)=>len(f)==1?f(com(...h)(...x)):f(...x.map(e=>com(...h)(e))):f,// function composition
+  com=(...a)=>a.reduce((t,f)=>(...x)=>len(f)==1?t(...x.map(e=>f(e))):t(f(...x))),// function composition
   type=g=>('fso'.indexOf((typeof g)[0])+4)%4,// 0=function,1=string,2=object(array),3=rest(bigint or number)
   types=g=>'fsobn'.indexOf((typeof g)[0]),// 0=function,1=string,2=object,3=bigint,4=number
   erce=(a,b)=>(erces[type(a)][types(b)] || id)(a),
