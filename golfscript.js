@@ -3,8 +3,8 @@ function GolfScript(code,stack=[],blocks={},output='')
   const lengths=[],// stores stack lengths at each [
   A=Array, N=Number, B=BigInt, S=String,
 
-  pop=()=>{for (let i in lengths) if (lengths[i]>=len(stack)) lengths[i]--; return stack.pop();},
-  popn=n=>{n=len(stack)-n; for (let i in lengths) if (lengths[i]>n) lengths[i]=n; return stack.splice(n);},
+  pop=()=>lengths.forEach((e,i)=>e<len(stack)?1:lengths[i]--)||stack.pop(),
+  popn=n=>(n=len(stack)-n, lengths.forEach((e,i)=>e<n?1:lengths[i]=n), stack.splice(n)),
   push=(...x)=>{stack.push(...x)},// deliberately returns null
   peek=(n=0)=>stack[n<0?-n-1:len(stack)-n-1],
   
