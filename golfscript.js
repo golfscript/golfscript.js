@@ -101,7 +101,7 @@ function GolfScript(code,stack=[],blocks={},output='')
       [fold,(s,a)=>a.map(e=>erce(e,s)).join(s),(a,b)=>len(a)?a.reduce((t,e)=>[].concat(t,b,e)):a],
       [(f,n)=>{while (n-->0) f()},(s,n)=>s.repeat(n),(a,n)=>A(n).fill(a).flat(),f2n((x,y)=>x*y)]),
     '/':order([unfold],[(f,s)=>each(f,s2a(s)),(x,y)=>x.split(y)],[each,(s,a)=>split(s2a(s),a),split],
-      [(c,n)=>unfold(c,block(S(n))),(s,n)=>group(join)(a2a(s),n),group(join),f2n((x,y)=>x/y)]),
+      [(c,n)=>unfold(c,block(S(n))),(s,n)=>group(join)(a2a(s),n),group(id),f2n((x,y)=>x/y)]),
     '%':order([(s,f)=>map(f,s2a(s))],[(f,s)=>a2s(map(f,s2a(s))),(x,y)=>x.split(y).filter(id)],
       [map,(s,a)=>split(s2a(s),a).filter(len),(x,y)=>split(x,y).filter(len)],[9,(s,n)=>join(step(a2a(s),n)),step,f2n((x,y)=>x<0?x%y+y:x%y)]),
     '|':coerce((x,y)=>x|y,com(dedup,concat)),
