@@ -102,7 +102,7 @@ function GolfScript(code,stack=[],blocks={},output='')
       [(f,n)=>{while (n-->0) f()},(s,n)=>s.repeat(n),(a,n)=>A(n).fill(a).flat(),f2n((x,y)=>x*y)]),
     '/':order([unfold],[(f,s)=>each(f,s2a(s)),(x,y)=>x.split(y)],[each,(s,a)=>split(s2a(s),a),split],
       [(c,n)=>unfold(c,block(S(n))),(s,n)=>group(join)(a2a(s),n),group(id),f2n((x,y)=>x/y)]),
-    '%':order([(s,f)=>map(f,s2a(s))],[(f,s)=>a2s(map(f,s2a(s))),(x,y)=>x.split(y).filter(id)],
+    '%':order([(f,s)=>map(f,s2a(s))],[(f,s)=>a2s(map(f,s2a(s))),(x,y)=>x.split(y).filter(id)],
       [map,(s,a)=>split(s2a(s),a).filter(len),(x,y)=>split(x,y).filter(len)],[9,(s,n)=>join(step(a2a(s),n)),step,f2n((x,y)=>x<0?x%y+y:x%y)]),
     '|':coerce((x,y)=>x|y,com(dedup,concat)),
     '&':coerce((x,y)=>x&y,(a,b)=>dedup(a).filter(e=>includes(b,e))),
