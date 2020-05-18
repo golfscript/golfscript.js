@@ -18,7 +18,7 @@ function GolfScript(code,stack=[],blocks={},output='')
   apply=(...a)=>x=>a[type(x)](x),
   coerce=(n,a,s=com(join,a),f=com(block,s,S))=>(x,y)=>[f,s,a,f2n(n)][type(x=erce(x,y))](x,erce(y,x)), // reverse & supply defaults
   order=(...a)=>(x,y)=>{if (types(x)>types(y)) [x,y]=[y,x]; return a[type(y)][type(x)](x,y)},
-  backtick=apply(f=>`{${f}}`,JSON.stringify,x=>`[${x.map(e=>backtick(e)).join(' ')}]`,S),
+  backtick=apply(f=>`{${f}}`,JSON.stringify,x=>`[${x.map(backtick).join(' ')}]`,S),
   join=a=>a.join(''),
   chr=s=>s.codePointAt(),
   abs=n=>n>0?n:-n, // safe for bigint
