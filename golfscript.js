@@ -16,7 +16,7 @@ function GolfScript(code,stack=[],blocks={},output='')
   types=g=>'fsobn'.indexOf((typeof g)[0]),// 0=function,1=string,2=object,3=bigint,4=number
   erce=(a,b)=>(erces[type(a)][types(b)] || id)(a),
   apply=(n,a,s=id,f=S)=>x=>[f,s,a,n][type(x)](x),
-  coerce=(n,a,s=com(join,a),f=com(block,s,S))=>(x,y)=>[f,s,a,f2n(n)][type(x=erce(x,y))](x,erce(y,x)), // reverse & supply defaults
+  coerce=(n,a,s=com(join,a),f=com(block,s,S))=>(x,y)=>[f,s,a,f2n(n)][type(x=erce(x,y))](x,erce(y,x)),
   order=(n,a,s=a,f=s)=>(x,y)=>{if (types(x)>types(y)) [x,y]=[y,x]; return [f,s,a,n][type(y)][type(x)](x,y)},
   backtick=apply(S,x=>`[${x.map(backtick).join(' ')}]`,JSON.stringify,f=>`{${f}}`),
   join=a=>a.join(''),
@@ -40,7 +40,7 @@ function GolfScript(code,stack=[],blocks={},output='')
   fold=(f,x)=>{if (len(x)) push(x[0])||x.slice(1).forEach(e=>push(e)||f())},
   compare=(a,b)=>less(a,b) ? -1 : equals(a,b) ? 0 : 1,
   sort=(a)=>a2a(a).sort(compare),
-  fsort=f=>pop().map(e=>push(e) || f() || {e,s:pop()}).sort((a,b)=>compare(a.s,b.s)).map(({e})=>e),
+  fsort=f=>a=>a.map(e=>push(e) || f() || {e,s:pop()}).sort((a,b)=>compare(a.s,b.s)).map(({e})=>e),
   minus=(x,y)=>x.filter(e=>!includes(y,e)),
   filter=f=>a=>a.filter(e=>push(e) || f() || bool(pop())),
   includes=(a,g)=>a2a(a).some(e=>equals(e,g)),
@@ -94,7 +94,7 @@ function GolfScript(code,stack=[],blocks={},output='')
     '`':backtick,
     '!':g=>+!bool(g),
     '@':(a,b,c)=>push(b,c,a),
-    '$':apply(peek,sort,com(join,sort),fsort),
+    '$':apply(peek,sort,com(join,sort),f=>apply(9,fsort(f),com(a2s,fsort(f),s2a),com(block,a2s,fsort(f),s2a))(pop())),
     '+':coerce((x,y)=>x+y,concat,concat,(x,y)=>block(x+' '+y)),
     '-':coerce((x,y)=>x-y,minus,com(join,minus,a2a)),
     '*':order([(f,n)=>{while (n-->0) f()},(s,n)=>s.repeat(n),(a,n)=>A(n).fill(a).flat(),f2n((x,y)=>x*y)],
