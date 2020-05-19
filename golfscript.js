@@ -21,8 +21,8 @@ function GolfScript(code,stack=[],blocks={},output='')
   backtick=apply(S,x=>`[${x.map(backtick).join(' ')}]`,JSON.stringify,f=>`{${f}}`),
   join=a=>a.join(''),
   chr=s=>s.codePointAt(),
-  abs=n=>n>0?n:-n, // safe for bigint
-  safe=n=>abs(n)<N.MAX_SAFE_INTEGER,
+  abs=n=>n>0?n:-n, // bigint safe
+  safe=n=>abs(n)<2**31, // max for bitwise ops
  
   a2a=A.from,
   a2s=apply(S.fromCodePoint,a=>join(a.flat(Infinity).map(a2s))),
