@@ -49,7 +49,6 @@ function GolfScript(code,stack=[],blocks={},output='')
   dedup=a=>a2a(new Set(a)),
   find=(f,a)=>a.find(e=>push(e) || f() || +!!bool(pop())),
   group=f=>(a,n)=>a2a({length:Math.ceil(len(a)/n)},(_,i)=>f(a.slice(i*n,i*n+n))),
-  maxlen=a=>a.reduce((t,e)=>Math.max(t,len(e)),0),
   split=(a,b)=>
   {
     let r=[],i;
@@ -71,7 +70,7 @@ function GolfScript(code,stack=[],blocks={},output='')
   aless=(a,b)=>+(len(b)>0 && (len(a)==0 || (equals(a[0],b[0])?aless(a.slice(1),b.slice(1)):less(a[0],b[0])))),
   base=(g,n)=>{let a=[]; g=abs(g); if (n=erce(n,g)) while (g) {a.unshift(b2n(g%n)); g=(g-g%n)/n; } return a;},
   esab=(a,n)=>b2n((n=B(n))&&b2n(a.reduce((t,e)=>t*n+B(e),0n))),
-  zip=g=>a2a({length:maxlen(g)},(_,i)=>g.filter(e=>len(e)>i).map(e=>e[i])),
+  zip=g=>a2a({length:Math.max(...g.map(len))},(_,i)=>g.filter(e=>len(e)>i).map(e=>e[i])),
 
   exec=s=>
   {
