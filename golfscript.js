@@ -14,10 +14,7 @@ function GolfScript(code,stack=[],blocks={},output='')
   com=(...a)=>a.reduce((t,f)=>(...x)=>len(f)==1?t(...x.map(e=>f(e))):t(f(...x))),// function composition
   type=g=>('fso'.indexOf((typeof g)[0])+4)%4,// 0=function,1=string,2=object(array),3=rest(bigint or number)
   types=g=>'fsobn'.indexOf((typeof g)[0]),// 0=function,1=string,2=object,3=bigint,4=number
-  erce=(a,b)=>(erces[type(a)][types(b)] || id)(a),
   apply=(n,a,s=id,f=S)=>x=>[f,s,a,n][type(x)](x),
-  coerce=(n,a,s=com(join,a),f=com(block,s,S))=>(x,y)=>[f,s,a,f2n(n)][type(x=erce(x,y))](x,erce(y,x)),
-  order=(n,a,s=a,f=s)=>(x,y)=>{if (types(x)>types(y)) [x,y]=[y,x]; return [f,s,a,n][type(y)][type(x)](x,y)},
   backtick=apply(S,x=>`[${x.map(backtick).join(' ')}]`,JSON.stringify,f=>`{${f}}`),
   join=a=>a.join(''),
   chr=s=>s.codePointAt(),
@@ -33,7 +30,9 @@ function GolfScript(code,stack=[],blocks={},output='')
   s2s=(s)=>s[0]=="'" ? s.slice(1,-1).replace(/\\(['\\])/g,"$1") : s[0]=='"' ? eval('`'+s.slice(1,-1).replace('`','\\`')+'`') : null,
   s2c=s=>{let n=parseInt(s); return isNaN(n) ? s2s(s) : safe(n) ? n : B(s);},
 
-  erces=[[],[block],[a=>block(a.map(apply(S,a2s)).join(' ')),a2s],[com(block,S),S,A.of,B]],
+  erce=(a,b)=>([[],[block],[a=>block(a.map(apply(S,a2s)).join(' ')),a2s],[com(block,S),S,A.of,B]][type(a)][types(b)] || id)(a),
+  coerce=(n,a,s=com(join,a),f=com(block,s,S))=>(x,y)=>[f,s,a,f2n(n)][type(x=erce(x,y))](x,erce(y,x)),
+  order=(n,a,s=a,f=s)=>(x,y)=>{if (types(x)>types(y)) [x,y]=[y,x]; return [f,s,a,n][type(y)][type(x)](x,y)},
 
   bool=apply(id,len),
   concat=(x,y)=>x.concat(y),
@@ -49,17 +48,7 @@ function GolfScript(code,stack=[],blocks={},output='')
   dedup=a=>a2a(new Set(a)),
   find=(f,a)=>a.find(e=>push(e) || f() || +!!bool(pop())),
   group=f=>(a,n)=>a2a({length:Math.ceil(len(a)/n)},(_,i)=>f(a.slice(i*n,i*n+n))),
-  split=(a,b)=>
-  {
-    let r=[],i;
-    a=a2a(a);
-    while ((i=a.findIndex((_,i)=>equals(b,a.slice(i,i+len(b)))))>=0){
-      r.push(a.splice(0,i));
-      a.splice(0,len(b));
-    }
-    r.push(a);
-    return r;
-  },
+  split=(a,b)=>a.reduce((t,e,i)=>(t[len(t)-1]?equals(b,a.slice(i,i+len(b)))?t.push([],...b.slice(1).map(_=>0)):t[len(t)-1].push(e):t.pop(),t),[[]]),
   each=(f,a)=>a.forEach(e=>push(e) || f()),
   step=(a,n)=>n<0 ? step(a2a(a).reverse(),-n) : a.filter((_,i)=>i%n==0),
   map=(f,a)=>a.map(e=>{let i=len(stack); push(e); f(); return stack.splice(i);}).flat(),
